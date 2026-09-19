@@ -1,14 +1,14 @@
 import java.util.Arrays;
 
-public class LateRegistrationPenaltyAudit {
-    static class EventTicket {
-        private double basePrice;
+public class LateWithdrawalPenaltyAudit {
+    static class RaceEntry {
+        private double entryFee;
         private double amountPaid;
         private double[] lateFeeHistory = new double[10];
         private int lateFeeCount;
 
-        EventTicket(double basePrice) {
-            this.basePrice = basePrice;
+        RaceEntry(double entryFee) {
+            this.entryFee = entryFee;
         }
 
         void pay(double amount) {
@@ -20,12 +20,12 @@ public class LateRegistrationPenaltyAudit {
         protected void applyLateFee(double amount) {
             if (amount > 0 && lateFeeCount < lateFeeHistory.length) {
                 lateFeeHistory[lateFeeCount++] = amount;
-                basePrice += amount;
+                entryFee += amount;
             }
         }
 
         double getBalanceDue() {
-            return basePrice - amountPaid;
+            return entryFee - amountPaid;
         }
 
         double[] getLateFeeHistory() {
@@ -33,9 +33,9 @@ public class LateRegistrationPenaltyAudit {
         }
     }
 
-    static class WorkshopTicket extends EventTicket {
-        WorkshopTicket(double basePrice) {
-            super(basePrice);
+    static class RunnerEntry extends RaceEntry {
+        RunnerEntry(double entryFee) {
+            super(entryFee);
         }
 
         @Override
@@ -45,13 +45,13 @@ public class LateRegistrationPenaltyAudit {
     }
 
     public static void main(String[] args) {
-        WorkshopTicket workshop = new WorkshopTicket(1200);
-        workshop.pay(1200);
-        workshop.applyLateFee(100);
-        System.out.println(workshop.getBalanceDue());
-        double[] history = workshop.getLateFeeHistory();
+        RunnerEntry runner = new RunnerEntry(80);
+        runner.pay(30);
+        runner.applyLateFee(20);
+        System.out.println(runner.getBalanceDue());
+        double[] history = runner.getLateFeeHistory();
         System.out.println(Arrays.toString(history));
         history[0] = 999;
-        System.out.println(Arrays.toString(workshop.getLateFeeHistory()));
+        System.out.println(Arrays.toString(runner.getLateFeeHistory()));
     }
 }
